@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UnitForge — Custom Unit &amp; Tower Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">✦</div>
+        <div>
+          <span class="brand-name">UnitForge</span>
+          <span class="brand-tag">STUDIO</span>
+        </div>
+      </div>
+      <div class="header-note">Game-independent custom unit &amp; tower workshop</div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="eyebrow">Custom Unit &amp; Tower Creator</div>
+      <h1>Forge your unit from scratch.</h1>
+      <p>Design towers, heroes, defenders, or custom entities for any game or fictional universe—complete with multi-level scaling, DPS math, and shareable PNG cards.</p>
+    </section>
+
+    <div class="workspace">
+      <!-- LEFT COLUMN: EDITOR -->
+      <div class="editor-col">
+        <!-- 01 IDENTITY -->
+        <section class="panel">
+          <div class="panel-head">
+            <h2><span class="step-badge">01</span> Identity &amp; Deployment</h2>
+          </div>
+
+          <div class="grid-2">
+            <div class="field">
+              <label for="unitName">Unit Name</label>
+              <input id="unitName" type="text" maxlength="48" placeholder="e.g. Chronos Sentinel">
+            </div>
+            <div class="field">
+              <label for="placementCost">Placement Cost</label>
+              <input id="placementCost" type="number" min="0" step="any" value="500" placeholder="e.g. 500">
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Rarity Tier</label>
+            <div class="rarity-row" id="rarities" role="radiogroup" aria-label="Unit rarity"></div>
+          </div>
+
+          <div class="field">
+            <div class="label-row">
+              <label for="description">Description <span class="muted">(optional)</span></label>
+              <span class="char-counter" id="descCount">0 / 140</span>
+            </div>
+            <textarea id="description" rows="2" maxlength="140" placeholder="Abilities, lore, targeting priority, or passive effects..."></textarea>
+          </div>
+
+          <div class="field mb-0">
+            <div class="label-row">
+              <label>Unit Artwork</label>
+              <button type="button" class="link-btn hidden" id="clearImage">Remove image</button>
+            </div>
+            <label class="upload-zone" id="uploadZone" for="imageInput">
+              <div class="upload-icon">＋</div>
+              <div class="upload-text">
+                <strong>Click to upload or drag &amp; drop artwork</strong>
+                <span>PNG, JPG, WEBP or GIF · Auto-optimized for local storage</span>
+              </div>
+              <input id="imageInput" type="file" accept="image/*">
+            </label>
+          </div>
+        </section>
+
+        <!-- 02 LEVEL STATISTICS -->
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2><span class="step-badge">02</span> Level Progression</h2>
+              <p class="panel-sub">Configure scaling per upgrade tier. DPS updates automatically (<span class="mono">Damage ÷ Cooldown</span>).</p>
+            </div>
+            <button type="button" class="btn btn-teal btn-sm" id="addLevel">＋ Add Level</button>
+          </div>
+
+          <div class="level-tabs" id="levelTabs" role="tablist" aria-label="Unit upgrade levels"></div>
+
+          <div class="table-wrap">
+            <table class="stat-table">
+              <thead>
+                <tr>
+                  <th>Statistic</th>
+                  <th>Value</th>
+                  <th>Unit / Metric</th>
+                </tr>
+              </thead>
+              <tbody id="statRows"></tbody>
+            </table>
+          </div>
+
+          <div class="panel-footer">
+            <button type="button" class="btn btn-ghost btn-sm" id="removeLevel">Remove current level</button>
+            <span class="muted" id="levelCount">1 level configured</span>
+          </div>
+        </section>
+
+        <!-- 03 COLLECTION -->
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2><span class="step-badge">03</span> Saved Collection</h2>
+              <p class="panel-sub">Stored locally in your browser via LocalStorage.</p>
+            </div>
+            <div class="btn-group">
+              <button type="button" class="btn btn-secondary btn-sm" id="newUnit">＋ New</button>
+              <button type="button" class="btn btn-primary btn-sm" id="saveUnit">Save Unit</button>
+            </div>
+          </div>
+
+          <div class="saved-list" id="savedList">
+            <p class="empty-state">No saved units yet. Build a unit and click <strong>Save Unit</strong>.</p>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT COLUMN: LIVE PREVIEW -->
+      <aside class="preview-col">
+        <div class="preview-header">
+          <h2>Live Card Preview</h2>
+          <span class="live-pill"><span class="pulse-dot"></span> Real-time</span>
+        </div>
+
+        <div class="preview-card" id="previewCard">
+          <div class="preview-media" id="previewImage">
+            <div class="placeholder-art">
+              <span>✦</span>
+              <small>NO ARTWORK UPLOADED</small>
+            </div>
+          </div>
+
+          <div class="preview-body">
+            <div class="preview-top">
+              <h3 class="preview-title" id="previewName">Your Unit</h3>
+              <span class="rarity-badge" id="previewRarity">COMMON</span>
+            </div>
+
+            <p class="preview-desc" id="previewDescription">Your unit description will appear here.</p>
+
+            <div class="preview-stats" id="previewStats"></div>
+
+            <div class="preview-meta">
+              <span id="previewLevel">LEVEL 1 OF 1</span>
+              <span id="previewTotalCost">TOTAL COST: 500</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-actions">
+          <button type="button" class="btn btn-primary btn-block" id="downloadCard">↓ Download Card PNG</button>
+          <button type="button" class="btn btn-teal-outline btn-block" id="copyStats">Copy Full Stats</button>
+        </div>
+        <p class="hint-text">Tip: Square or 16:9 artwork produces the cleanest card export.</p>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="footer">
+    UnitForge · Make your own rules. Forge your own units.
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
